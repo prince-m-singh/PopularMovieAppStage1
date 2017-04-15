@@ -1,6 +1,7 @@
 package com.kumar.prince.popularmovie;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kumar.prince.popularmovie.adapter.MovieAdapter;
 import com.kumar.prince.popularmovie.network.NetworkUtils;
@@ -29,12 +31,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler{
     /*For Log */
     private final String TAG=getClass().getName();
 
     /*Array Of Image Url*/
-    private String[] imgUrl = new String[20];
+    private String[] imgUrl ;
 
     /*Grid View for movie Poster*/
     private GridView mGridView;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieAdapter movieAdapter;
 
-    int urlType=0;
+    static int urlType=0;
 
     private JSONArray movieDetails;
     Context context;
@@ -58,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static Bundle mBundleRecyclerViewState;
 
+
+    private final String TITLE = "title";
+
+    private final String RELEASE_DATE = "release_date";
+
+    private final String MOVIE_POSTER = "poster_path";
+
+    private final String VOTE_AVERAGE = "vote_average";
+
+    private final String PLOT_SYNOPSIS = "overview";
 
     private RecyclerView.LayoutManager layoutManager;
     @Override
@@ -93,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(true);
         Log.e("TAG","\nBefore Create Adapter");
-        movieAdapter =new MovieAdapter(context);
+        movieAdapter =new MovieAdapter(this);
         Log.e("TAG","\nBefore Set Adapter");
         mRecyclerView.setAdapter(movieAdapter);
         // This TextView is used to display errors and will be hidden if there are no errors
@@ -187,16 +199,40 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onClick(JSONObject movieData) {
+      Log.e("TAG",movieData.toString());
+        try {
+
+            String title = movieData.getString(TITLE);
+            String poster = "" + movieData.getString(MOVIE_POSTER);
+            String release_date = movieData.getString(RELEASE_DATE);
+            String vote = movieData.getString(VOTE_AVERAGE);
+            String plot = movieData.getString(PLOT_SYNOPSIS);
+
+            Intent intent = new Intent(getApplicationContext(), MovieDetailActivity.class);
+            intent.putExtra(TITLE, title);
+            intent.putExtra(MOVIE_POSTER, poster);
+            intent.putExtra(RELEASE_DATE, release_date);
+            intent.putExtra(VOTE_AVERAGE, vote);
+            intent.putExtra(PLOT_SYNOPSIS, plot);
+
+            startActivity(intent);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            showErrorMessage();
+        }
+
+    }
 
 
-
-
-
-    public class FetchMovieDataTask extends AsyncTask<Integer, Void, String[]> {
+    public class FetchMovieDataTask extends AsyncTask<Integer, Void, String> {
 
 
         @Override
-        protected String[] doInBackground(Integer... integers) {
+        protected String doInBackground(Integer... integers) {
+            String jsonWeatherResponse="";
             if (integers.length == 0) {
                 Log.d(TAG,"Integer Length"+integers.length);
                 return null;
@@ -205,18 +241,20 @@ public class MainActivity extends AppCompatActivity {
             URL movieRequestURL = NetworkUtils.buildUrl(getApplicationContext(),integers[0]);
 
             try {
-                String jsonWeatherResponse = NetworkUtils
+                jsonWeatherResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestURL);
                 Log.d(TAG,"\nResponce:- "+jsonWeatherResponse);
                 if (jsonWeatherResponse != null) {
                     JSONObject movie = new JSONObject(jsonWeatherResponse);
+
                     movieDetails = movie.getJSONArray("results");
+                    imgUrl = new String[movieDetails.length()];
                     for (int i = 0; i < movieDetails.length(); i++) {
                         JSONObject temp_mov = movieDetails.getJSONObject(i);
                         imgUrl[i] = context.getResources().getString(R.string.poster_url) + temp_mov.getString("poster_path");
                     }
                 } else
-                    return null;
+                    return jsonWeatherResponse;
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -226,8 +264,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            Log.d(TAG,"\nResponce:- "+imgUrl.toString());
-            return imgUrl;
+//            Log.d(TAG,"\nResponce:- "+imgUrl.toString());
+           // return imgUrl;
+            return jsonWeatherResponse;
 
 
         }
@@ -240,12 +279,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(String[] strings) {
+        protected void onPostExecute(String strings) {
             super.onPostExecute(strings);
+            String [] movieDetailsData;
+            JSONArray movieDetailsArray;
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (strings != null) {
                 // showWeatherDataView();
-                movieAdapter.setMovierURLData(strings);
+                JSONObject movie = null;
+                try {
+                    movie = new JSONObject(strings);
+                    movieDetails = movie.getJSONArray("results");
+                   // movieDetailsData=movieDetails.
+                    imgUrl = new String[movieDetails.length()];
+                    for (int i = 0; i < movieDetails.length(); i++) {
+                        JSONObject temp_mov = movieDetails.getJSONObject(i);
+
+                        imgUrl[i] = context.getResources().getString(R.string.poster_url) + temp_mov.getString("poster_path");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+                movieAdapter.setMovierURLData(imgUrl);
+                movieAdapter.setMovieDataJSONArray(movieDetails);
             } else {
                 showErrorMessage();
             }
