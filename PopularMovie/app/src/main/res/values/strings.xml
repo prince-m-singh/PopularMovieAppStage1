@@ -7,7 +7,7 @@
 
     <string name="error_message">An error has occurred. Please try again after some time</string>
 
-    <string name="api_key">fec04a3c2a7e9636abec6390aea95829</string>
+    <string name="api_key"></string>
 
     <string name="poster_url">http://image.tmdb.org/t/p/w185</string>
 
