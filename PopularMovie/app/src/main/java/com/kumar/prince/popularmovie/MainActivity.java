@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private final String KEY_RECYCLER_STATE = "recycler_state";
 
+    String jsonWeatherResponse;
+
     private static Bundle mBundleRecyclerViewState;
 
 
@@ -232,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected String doInBackground(Integer... integers) {
-            String jsonWeatherResponse="";
+           // String jsonWeatherResponse="";
             if (integers.length == 0) {
                 Log.d(TAG,"Integer Length"+integers.length);
                 return null;

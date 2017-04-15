@@ -107,6 +107,8 @@ public class NetworkUtils {
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
+
+
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);

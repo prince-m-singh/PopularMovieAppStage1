@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <ImageView
-        android:id="@+id/img_moviePoster"
+        android:id="@+id/imgmovieposter"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
