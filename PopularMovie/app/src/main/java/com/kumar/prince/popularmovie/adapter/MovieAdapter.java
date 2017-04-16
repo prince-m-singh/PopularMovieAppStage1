@@ -27,7 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     final private MovieAdapter.MovieAdapterOnClickHandler mClickHandler;
 
     public MovieAdapter(MovieAdapterOnClickHandler movieAdapterOnClickHandler) {
-    //this.context=context;
+
         mClickHandler= movieAdapterOnClickHandler;
     }
 
@@ -37,45 +37,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public MovieAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("TAG","onCreateViewHolder "+viewType);
         context=parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movieposter, parent, false);
         return new MovieAdapterViewHolder(view);
-
-
-        //return null;
     }
 
     @Override
     public void onBindViewHolder(MovieAdapter.MovieAdapterViewHolder holder, int position) {
-        Log.e("TAG",posterURL[position]+" "+position);
-        JSONObject movieJSONObject;
-        try {
-            movieJSONObject=movieData.getJSONObject(position);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         Picasso.with(context).load(posterURL[position]).into(holder.imageMoviePoster);
     }
 
     @Override
     public int getItemCount() {
-
-        if (posterURL==null){ Log.e("TAG","getItemCount ");
-
+        if (posterURL==null){
             return 0;
         }
         return posterURL.length;
     }
 
-
     public void setMovierURLData(String[] posterURL) {
-       // Log.e("TAG"," setMovierURLData"+posterURL.toString());
         this.posterURL = posterURL;
         notifyDataSetChanged();
     }
-    public void setMovieDataJSONArray(JSONArray movieData){
 
+    public void setMovieDataJSONArray(JSONArray movieData){
         this.movieData=movieData;
     }
 
