@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/title_marginend"
+            app:expandedTitleMarginStart="@dimen/title_marginstart"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="true"
             app:toolbarId="@+id/toolbar">
@@ -47,36 +47,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="@dimen/layout_margin_ll"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="10dp"
+                android:layout_height="@dimen/layout_height_large"
+                android:layout_margin="@dimen/margin_small"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/voteAvgerage"
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/layout_width_large"
                     android:layout_height="match_parent"
                     android:background="@color/spotify"
                     android:gravity="center"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
-                    android:textSize="56dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_sz_large"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/titleofMovie"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_height="@dimen/layout_height_medium"
+                    android:layout_marginLeft="@dimen/margin_verysmall"
                     android:layout_toEndOf="@+id/voteAvgerage"
                     android:layout_toRightOf="@+id/voteAvgerage"
                     android:gravity="center_vertical|left"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textSize="20dp" />
+                    android:textSize="@dimen/text_sz_medium" />
 
                 <TextView
                     android:id="@+id/releaseDateMovie"
@@ -86,17 +86,17 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignRight="@+id/titleofMovie"
                     android:layout_below="@+id/titleofMovie"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="@dimen/margin_verysmall"
                     android:layout_toRightOf="@+id/voteAvgerage"
-                    android:textSize="15dp" />
+                    android:textSize="@dimen/text_sz_verysmall" />
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/movieplot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="16dp" />
+                android:padding="@dimen/padding_small"
+                android:textSize="@dimen/text_sz_small" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

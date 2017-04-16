@@ -3,7 +3,9 @@ package com.kumar.prince.popularmovie;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,17 +18,20 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.kumar.prince.popularmovie.adapter.MovieAdapter;
 import com.kumar.prince.popularmovie.network.NetworkUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler{
-    private final String TAG=getClass().getName();
-    private String[] imgUrl ;
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
+    private final String TAG = getClass().getName();
+    private String[] imgUrl;
     private GridView mGridView;
     /*Menu option where user can change from Toprated movie to popular movie and vise versa */
     private Menu mMenu;
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ProgressBar mLoadingIndicator;
     private RecyclerView mRecyclerView;
     private MovieAdapter movieAdapter;
-    static int urlType=0;
+    static int urlType = 0;
     private JSONArray movieDetails;
     Context context;
     private final String KEY_RECYCLER_STATE = "recycler_state";
@@ -46,45 +51,60 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private final String VOTE_AVERAGE = "vote_average";
     private final String PLOT_SYNOPSIS = "overview";
     private RecyclerView.LayoutManager layoutManager;
+    int mScrollPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context=MainActivity.this;
-        mRecyclerView =(RecyclerView) findViewById(R.id.recyclerview_moviecast);
+        context = MainActivity.this;
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_moviecast);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-        layoutManager = new GridLayoutManager(this,2);
+        layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
-        movieAdapter =new MovieAdapter(this);
+        movieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(movieAdapter);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        if (mBundleRecyclerViewState != null) {
+            Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+        }
         loadMovieData();
 
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
-        mBundleRecyclerViewState = new Bundle();
+     /*   mBundleRecyclerViewState = new Bundle();
         Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
-        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);*/
     }
 
     @Override
-    protected void onResume()
-    {
-        super.onResume();
-        if (mBundleRecyclerViewState != null) {
-            Parcelable listState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("key");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
         }
     }
 
-    private void loadMovieData(){
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("key", mRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void loadMovieData() {
         showMovieDataView();
         new FetchMovieDataTask().execute(urlType);
 
@@ -103,12 +123,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.action_most_popular) {
-            urlType=0;
+            urlType = 0;
             movieAdapter.setMovierURLData(null);
             loadMovieData();
             return true;
-        }else if (itemThatWasClickedId == R.id.action_top_rated){
-            urlType=1;
+        } else if (itemThatWasClickedId == R.id.action_top_rated) {
+            urlType = 1;
             movieAdapter.setMovierURLData(null);
             loadMovieData();
             return true;
@@ -162,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             if (integers.length == 0) {
                 return null;
             }
-            URL movieRequestURL = NetworkUtils.buildUrl(getApplicationContext(),integers[0]);
+            URL movieRequestURL = NetworkUtils.buildUrl(getApplicationContext(), integers[0]);
             try {
                 jsonWeatherResponse = NetworkUtils
                         .getResponseFromHttpUrl(movieRequestURL);

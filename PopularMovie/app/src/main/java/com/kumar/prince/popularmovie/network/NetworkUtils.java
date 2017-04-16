@@ -22,10 +22,9 @@ public class NetworkUtils {
     private static final String TAG = "NetworkUtils";
 
     /*These two URL used for requesting Movie according to popularity  */
-    private static final String POPULAR_MOVIE_URL =  "https://api.themoviedb.org/3/movie/popular";
+    private static final String POPULAR_MOVIE_URL = "https://api.themoviedb.org/3/movie/popular";
 
-    private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated" ;
-
+    private static final String TOP_RATED_MOVIE_URL = "https://api.themoviedb.org/3/movie/top_rated";
 
 
     /* The format we want our API to return */
@@ -35,7 +34,7 @@ public class NetworkUtils {
 
     /*In which Language Movie Popular or Top Rated  */
     private static final String languageCode = "en-US";
-    private static int page=1;
+    private static int page = 1;
 
     final static String API = "api_key";
     final static String LANGUAGE = "language";
@@ -45,30 +44,30 @@ public class NetworkUtils {
     final static String DAYS_PARAM = "cnt";
 
 
-    public static String urlForQuery(int urlQueryType){
-        String queryurl="";
-        if (urlQueryType==0){
-            queryurl=POPULAR_MOVIE_URL;
-        }else if (urlQueryType==1){
-            queryurl=TOP_RATED_MOVIE_URL;
-        }else {
-            queryurl=TOP_RATED_MOVIE_URL;
+    public static String urlForQuery(int urlQueryType) {
+        String queryurl = "";
+        if (urlQueryType == 0) {
+            queryurl = POPULAR_MOVIE_URL;
+        } else if (urlQueryType == 1) {
+            queryurl = TOP_RATED_MOVIE_URL;
+        } else {
+            queryurl = TOP_RATED_MOVIE_URL;
         }
         return queryurl;
     }
+
     /**
      * Build Url for popular movie and toprated url
      *
      * @param context context for application.
      * @param urlType which url type we are sending rewuest
-     *
      * @return The URL to use to query the weather server.
      */
-    public static URL buildUrl(Context context,int urlType) {
-        Log.v(TAG, urlType+"Built URI " + urlForQuery(urlType));
-        String apikey=context.getResources().getString(R.string.api_key);
+    public static URL buildUrl(Context context, int urlType) {
+        Log.v(TAG, urlType + "Built URI " + urlForQuery(urlType));
+        String apikey = context.getResources().getString(R.string.api_key);
         Uri builtUri = Uri.parse(urlForQuery(urlType)).buildUpon()
-                .appendQueryParameter(API,apikey)
+                .appendQueryParameter(API, apikey)
                 .appendQueryParameter(LANGUAGE, languageCode)
                 .build();
 
@@ -105,7 +104,11 @@ public class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
+
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setConnectTimeout(5000);
+        urlConnection.setReadTimeout(10000);
+
         try {
 
 
@@ -124,10 +127,6 @@ public class NetworkUtils {
             urlConnection.disconnect();
         }
     }
-
-
-
-
 
 
 }

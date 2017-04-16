@@ -21,23 +21,23 @@ import org.json.JSONObject;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private String [] posterURL;
+    private String[] posterURL;
     private JSONArray movieData;
     private Context context;
     final private MovieAdapter.MovieAdapterOnClickHandler mClickHandler;
 
     public MovieAdapter(MovieAdapterOnClickHandler movieAdapterOnClickHandler) {
 
-        mClickHandler= movieAdapterOnClickHandler;
+        mClickHandler = movieAdapterOnClickHandler;
     }
 
-    public interface MovieAdapterOnClickHandler{
+    public interface MovieAdapterOnClickHandler {
         void onClick(JSONObject movieData);
     }
 
     @Override
     public MovieAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context=parent.getContext();
+        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movieposter, parent, false);
         return new MovieAdapterViewHolder(view);
     }
@@ -49,7 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public int getItemCount() {
-        if (posterURL==null){
+        if (posterURL == null) {
             return 0;
         }
         return posterURL.length;
@@ -60,20 +60,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         notifyDataSetChanged();
     }
 
-    public void setMovieDataJSONArray(JSONArray movieData){
-        this.movieData=movieData;
+    public void setMovieDataJSONArray(JSONArray movieData) {
+        this.movieData = movieData;
     }
 
 
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public final ImageView imageMoviePoster;
 
-
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public  final ImageView imageMoviePoster;
         public MovieAdapterViewHolder(View itemView) {
 
             super(itemView);
-            Log.e("TAG"," MovieAdapterViewHolder"+posterURL.toString());
-            imageMoviePoster=(ImageView) itemView.findViewById(R.id.imgmovieposter);
+            Log.e("TAG", " MovieAdapterViewHolder" + posterURL.toString());
+            imageMoviePoster = (ImageView) itemView.findViewById(R.id.imgmovieposter);
             itemView.setOnClickListener(this);
         }
 
