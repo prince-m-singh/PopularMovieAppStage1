@@ -78,8 +78,6 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
-
         return url;
     }
 
